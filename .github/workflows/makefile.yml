@@ -1,0 +1,27 @@
+name: 部署 SkyWalking Operator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v2
+
+    - name: 设置 Kubernetes
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.18.0'
+
+    - name: 安装 SkyWalking Operator
+      run: |
+        kubectl apply -f https://github.com/apache/skywalking-swck/releases/download/v0.3.0/skywalking-swck.yaml
+
+    - name: 验证安装
+      run: |
+        kubectl get pods -n skywalking
